@@ -2,7 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from '../screens/Login';
 import SignupScreen from '../screens/Signup';
-import DrawerNavigator from './DrawerNavigator';
+import DrawerScreen from './Drawer';
 
 const Stack = createStackNavigator();
 export default function StackScreen() {
@@ -10,7 +10,7 @@ export default function StackScreen() {
     <Stack.Navigator>
       <Stack.Screen name='Signup' component={SignupScreen} options={{ headerShown: false }} />
       <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }} />
-      {/* <Stack.Screen name='Home' component={DrawerNavigator} options={{ headerShown: false }} /> */}
+      <Stack.Screen name='Screen' component={DrawerScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   )
 }

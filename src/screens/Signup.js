@@ -5,59 +5,74 @@ const SignupScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  
 
   const handleSignup = () => {
-
-    if (!email && !password && !confirmPassword) {
-      Alert.alert('Error', 'Please fill in all fields.');
-      return;
-    }
-
+    setEmailError('');
+    setPasswordError('');
+    setConfirmPasswordError('');
+  
+    let hasError = false;
+  
     if (!email) {
-      Alert.alert('Error', 'Please enter an email.');
-      return;
+      setEmailError('Please enter an email.');
+      hasError = true;
     }
-
+  
     if (!password) {
-      Alert.alert('Error', 'Please enter a password.');
-      return;
+      setPasswordError('Please enter a password.');
+      hasError = true;
     }
-
+  
     if (!confirmPassword) {
-      Alert.alert('Error', 'Please enter a confirm password.');
-      return;
+      setConfirmPasswordError('Please enter a confirm password.');
+      hasError = true;
     }
-
+  
     if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match.');
+      setConfirmPasswordError('Passwords do not match.');
+      hasError = true;
+    }
+  
+    if (hasError) {
       return;
     }
-
+  
+    if (!validateEmail()) {
+      return;
+    }
+  
+    if (!validatePassword()) {
+      return;
+    }
+  
     setEmail('');
     setPassword('');
     setConfirmPassword('');
-
-    if (validateEmail() && validatePassword()) {
-      // Perform signup logic here
-      console.log('Email:', email);
-      console.log('Password:', password);
-      navigation.navigate('Login')
-    }
-
+  
+    // Perform signup logic here
+    console.log('Email:', email);
+    console.log('Password:', password);
+    navigation.navigate('Login');
   };
+  
 
   const validateEmail = () => {
     const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (!emailRegex.test(email)) {
-      Alert.alert('Error', 'Invalid email address.');
+      setEmailError('Invalid email address.');
       return false;
     }
     return true;
   };
-
+  
   const validatePassword = () => {
     if (password.length < 8) {
-      Alert.alert('Error', 'Password must be at least 8 characters.');
+      setPasswordError('Password must be at least 8 characters.');
       return false;
     }
     return true;
@@ -75,7 +90,7 @@ const SignupScreen = ({ navigation }) => {
           placeholder={'Enter your email'}
           value={email}
         />
-
+<Text style={styles.error}>{emailError}</Text>
         <Text style={styles.label}>Create a password</Text>
         <TextInput
           style={styles.input}
@@ -84,6 +99,7 @@ const SignupScreen = ({ navigation }) => {
           placeholder='Create a password'
           value={password}
         />
+        <Text style={styles.error}>{passwordError}</Text>
 
         <Text style={styles.label}>Confirm Password</Text>
         <TextInput
@@ -93,13 +109,23 @@ const SignupScreen = ({ navigation }) => {
           placeholder='Confirm password'
           value={confirmPassword}
         />
+        <Text style={styles.error}>{confirmPasswordError}</Text>
         <View style={{ alignItems: 'center' }}>
           <TouchableOpacity style={styles.btn} onPress={handleSignup}>
             <Text style={styles.btn_Text}>Sign up</Text>
           </TouchableOpacity>
           <Text style={styles.link_Text} >
             Have an account?
-            <Text style={styles.link_Text2} onPress={() => navigation.navigate('Login')}> Login</Text>
+            <Text style={styles.link_Text2} onPress={() => {
+              navigation.navigate('Login')
+              setEmail('');
+              setPassword('');
+              setConfirmPassword('');
+              setEmailError('');
+              setPasswordError('');
+              setConfirmPasswordError('');
+              
+              }}> Login</Text>
           </Text>
 
         </View>
@@ -139,10 +165,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 5
   },
-  error: {
-    color: 'red',
-    marginBottom: 10,
-  },
+ 
   btn: {
     backgroundColor: 'orange',
     width: "100%",
@@ -163,6 +186,11 @@ const styles = StyleSheet.create({
   link_Text2:{
    fontWeight:'bold',
    color:'orange'
+  },
+  error:{
+    color:'red',
+    marginTop:-25,
+    marginBottom:20
   }
 
 });

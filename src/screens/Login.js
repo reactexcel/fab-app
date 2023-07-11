@@ -5,15 +5,25 @@ export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
+
   const handleLogin = () => {
-    if (!email || !password) {
-      Alert.alert('Error', 'Please fill in all fields');
+    setEmailError('');
+    setPasswordError('');
+
+    if (!email) {
+      setEmailError('Please enter an email.');
       return;
     }
-    // Perform login logic here
-    console.log('Email:', email);
-    console.log('Password:', password);
-    navigation.navigate('Home');
+
+    if (!password) {
+      setPasswordError('Please enter a password.');
+      return;
+    }
+
+    
   };
 
   return (
@@ -28,8 +38,8 @@ export default function LoginScreen({ navigation }) {
         placeholder={'Enter your email'}
         value={email}
       />
-
-      <Text style={styles.label}> password</Text>
+      <Text style={styles.error}>{emailError}</Text>
+      <Text style={styles.label}> Password</Text>
       <TextInput
         style={styles.input}
         onChangeText={(text) => setPassword(text)}
@@ -37,12 +47,18 @@ export default function LoginScreen({ navigation }) {
         placeholder="Enter your password"
         value={password}
       />
+      <Text style={styles.error}>{passwordError}</Text>
       <View style={{ alignItems: 'center' }}>
-        <TouchableOpacity style={styles.btn} onPress={handleLogin}>
+        <TouchableOpacity style={styles.btn} onPress={()=>{
+          handleLogin()
+          navigation.navigate('Screen');
+        }}>
           <Text style={styles.btn_Text}>Login</Text>
         </TouchableOpacity>
         <Text style={styles.link_Text}>
-          Don't have an account? <Text style={styles.link_Text2} onPress={() => navigation.navigate('Signup')}>Signup</Text>
+          Don't have an account? <Text style={styles.link_Text2} onPress={() => {
+            navigation.navigate('Signup')
+            }}>Signup</Text>
         </Text>
       </View>
     </View>
@@ -56,7 +72,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
-  header:{
+  header: {
     textAlign: 'center',
     marginBottom: 80,
     color: 'black',
@@ -97,8 +113,13 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 17
   },
-  link_Text2:{
-   fontWeight:'bold',
-   color:'orange'
+  link_Text2: {
+    fontWeight: 'bold',
+    color: 'orange'
+  },
+  error: {
+    color: 'red',
+    marginTop: -25,
+    marginBottom: 20
   }
 });
