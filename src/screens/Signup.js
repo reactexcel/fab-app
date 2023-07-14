@@ -35,7 +35,6 @@ const SignupScreen = ({navigation}) => {
   };
 
   const handleSignup = async () => {
-  
     setEmail('');
     setPassword('');
     setConfirmPassword('');
@@ -45,22 +44,16 @@ const SignupScreen = ({navigation}) => {
     //navigation.navigate('Login');
 
     try {
-      const response = await api.post(
-        'signup/',
-        {
-          email,
-          password: {password: password, confirm_password: confirmPassword},
-          role,
-        },
-      );
+      const response = await api.post('signup/', {
+        email,
+        password: {password: password, confirm_password: confirmPassword},
+        role,
+      });
       console.log(response);
     } catch (error) {
       console.log(error);
     }
   };
-
-  
-  
 
   return (
     <>
@@ -78,11 +71,8 @@ const SignupScreen = ({navigation}) => {
           textHeader={'What is your password'}
           value={password}
           onChangeText={text => setPassword(text)}
-          placeholder={'Enter your Password'} 
+          placeholder={'Enter your Password'}
           secureTextEntry={true}
-          
-
-          
         />
         <FormInput
           textHeader={'What s your Confirm Password'}
@@ -90,7 +80,6 @@ const SignupScreen = ({navigation}) => {
           onChangeText={text => setConfirmPassword(text)}
           placeholder={'Enter your Confirm Password'}
           secureTextEntry={true}
-          
         />
 
         <View style={{flexDirection: 'row'}}>
@@ -124,8 +113,7 @@ const SignupScreen = ({navigation}) => {
               onPress={() => {
                 navigation.navigate('Login'),
                   setConfirmPassword(''),
-                  setEmail('')
-                  
+                  setEmail('');
               }}>
               {' '}
               Login
