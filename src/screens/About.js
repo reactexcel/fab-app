@@ -1,11 +1,11 @@
-import { View, Text } from 'react-native'
+import { View, Text } from 'react-native';
 import React from 'react'
 
  function About() {
   return (
-    <View>
-      <Text>About</Text>
+    <View style={{alignItems:'center',marginTop:200}}>
+      <Text>Welcome in About Page</Text>
     </View>
   )
 }
-export default About
+export default About;

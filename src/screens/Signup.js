@@ -1,135 +1,137 @@
-import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text, Alert, TouchableOpacity } from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Button,
+  StyleSheet,
+  Text,
+  Alert,
+  TouchableOpacity,
+  FlatList,
+} from 'react-native';
+import axios from 'axios';
+import FormInput from '../components/FormInput';
+import api from '../utils/api';
 
-const SignupScreen = ({ navigation }) => {
+const SignupScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [confirmPasswordError, setConfirmPasswordError] = useState('');
-  
 
-  const handleSignup = () => {
-    setEmailError('');
-    setPasswordError('');
-    setConfirmPasswordError('');
-  
-    let hasError = false;
-  
-    if (!email) {
-      setEmailError('Please enter an email.');
-      hasError = true;
-    }
-  
-    if (!password) {
-      setPasswordError('Please enter a password.');
-      hasError = true;
-    }
-  
-    if (!confirmPassword) {
-      setConfirmPasswordError('Please enter a confirm password.');
-      hasError = true;
-    }
-  
-    if (password !== confirmPassword) {
-      setConfirmPasswordError('Passwords do not match.');
-      hasError = true;
-    }
-  
-    if (hasError) {
-      return;
-    }
-  
-    if (!validateEmail()) {
-      return;
-    }
-  
-    if (!validatePassword()) {
-      return;
-    }
+  const [role, setRoles] = useState([
+    {name: 'Exhibitor', id: 1, isChecked: false},
+    {name: 'Fabricators', id: 2, isChecked: false},
+  ]);
+
+  const handleRolePress = index => {
+    const updatedRoles = role.map((roles, i) => {
+      if (i === index) {
+        return {...roles, isChecked: !roles.isChecked};
+      } else {
+        return {...roles, isChecked: false};
+      }
+    });
+
+    setRoles(updatedRoles);
+  };
+
+  const handleSignup = async () => {
   
     setEmail('');
     setPassword('');
     setConfirmPassword('');
-  
-    // Perform signup logic here
-    console.log('Email:', email);
-    console.log('Password:', password);
-    navigation.navigate('Login');
-  };
-  
 
-  const validateEmail = () => {
-    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if (!emailRegex.test(email)) {
-      setEmailError('Invalid email address.');
-      return false;
+    // Perform signup logic here
+
+    //navigation.navigate('Login');
+
+    try {
+      const response = await api.post(
+        'signup/',
+        {
+          email,
+          password: {password: password, confirm_password: confirmPassword},
+          role,
+        },
+      );
+      console.log(response);
+    } catch (error) {
+      console.log(error);
     }
-    return true;
   };
+
   
-  const validatePassword = () => {
-    if (password.length < 8) {
-      setPasswordError('Password must be at least 8 characters.');
-      return false;
-    }
-    return true;
-  };
+  
 
   return (
     <>
       <View style={styles.container}>
-        <Text style={styles.header}
-        >Sign up</Text>
-        <Text style={styles.label}>What's your email?</Text>
-        <TextInput
-          style={styles.input}
+        <Text style={styles.header}>Sign up</Text>
+        <FormInput
+          textHeader={'Whats your email?'}
+          value={email}
           onChangeText={text => setEmail(text)}
           placeholder={'Enter your email'}
-          value={email}
+          secureTextEntry={false}
         />
-<Text style={styles.error}>{emailError}</Text>
-        <Text style={styles.label}>Create a password</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={text => setPassword(text)}
-          secureTextEntry
-          placeholder='Create a password'
-          value={password}
-        />
-        <Text style={styles.error}>{passwordError}</Text>
 
-        <Text style={styles.label}>Confirm Password</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={text => setConfirmPassword(text)}
-          secureTextEntry
-          placeholder='Confirm password'
-          value={confirmPassword}
+        <FormInput
+          textHeader={'What is your password'}
+          value={password}
+          onChangeText={text => setPassword(text)}
+          placeholder={'Enter your Password'} 
+          secureTextEntry={true}
+          
+
+          
         />
-        <Text style={styles.error}>{confirmPasswordError}</Text>
-        <View style={{ alignItems: 'center' }}>
+        <FormInput
+          textHeader={'What s your Confirm Password'}
+          value={confirmPassword}
+          onChangeText={text => setConfirmPassword(text)}
+          placeholder={'Enter your Confirm Password'}
+          secureTextEntry={true}
+          
+        />
+
+        <View style={{flexDirection: 'row'}}>
+          <FlatList
+            data={role}
+            keyExtractor={item => item.id.toString()}
+            renderItem={({item, index}) => (
+              <TouchableOpacity
+                onPress={() => handleRolePress(index)}
+                style={[
+                  styles.btns,
+                  {backgroundColor: item.isChecked ? 'orange' : 'gray'},
+                ]}>
+                <Text style={{textAlign: 'center', color: 'white'}}>
+                  {item.name}
+                </Text>
+              </TouchableOpacity>
+            )}
+            horizontal={true}
+          />
+        </View>
+
+        <View style={{alignItems: 'center'}}>
           <TouchableOpacity style={styles.btn} onPress={handleSignup}>
             <Text style={styles.btn_Text}>Sign up</Text>
           </TouchableOpacity>
-          <Text style={styles.link_Text} >
+          <Text style={styles.link_Text}>
             Have an account?
-            <Text style={styles.link_Text2} onPress={() => {
-              navigation.navigate('Login')
-              setEmail('');
-              setPassword('');
-              setConfirmPassword('');
-              setEmailError('');
-              setPasswordError('');
-              setConfirmPasswordError('');
-              
-              }}> Login</Text>
+            <Text
+              style={styles.link_Text2}
+              onPress={() => {
+                navigation.navigate('Login'),
+                  setConfirmPassword(''),
+                  setEmail('')
+                  
+              }}>
+              {' '}
+              Login
+            </Text>
           </Text>
-
         </View>
-
       </View>
     </>
   );
@@ -142,57 +144,49 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     padding: 20,
   },
-  header:{
+  header: {
     textAlign: 'center',
     marginBottom: 80,
     color: 'black',
     fontWeight: '400',
-    fontSize: 30
+    fontSize: 30,
   },
-  label: {
-    fontSize: 16,
-    fontWeight: '400',
-    marginBottom: 5,
-    color: 'black',
-    marginLeft: 2
-  },
-  input: {
-    width: '100%',
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 30,
-    paddingHorizontal: 10,
-    borderRadius: 5
-  },
- 
+
   btn: {
     backgroundColor: 'orange',
-    width: "100%",
+    width: '100%',
     padding: 10,
-    borderRadius: 20
+    borderRadius: 20,
+  },
+  btns: {
+    backgroundColor: 'gray',
+    width: 170,
+    height: 40,
+    borderRadius: 5,
+    marginBottom: 30,
+    justifyContent: 'center',
+    margin: 5,
   },
   btn_Text: {
     textAlign: 'center',
     color: 'black',
     fontWeight: '500',
-    fontSize: 20
+    fontSize: 20,
   },
   link_Text: {
     marginTop: 10,
     color: 'black',
-    fontSize: 17
+    fontSize: 17,
   },
-  link_Text2:{
-   fontWeight:'bold',
-   color:'orange'
+  link_Text2: {
+    fontWeight: 'bold',
+    color: 'orange',
   },
-  error:{
-    color:'red',
-    marginTop:-25,
-    marginBottom:20
-  }
-
+  error: {
+    color: 'red',
+    marginTop: -25,
+    marginBottom: 20,
+  },
 });
 
 export default SignupScreen;

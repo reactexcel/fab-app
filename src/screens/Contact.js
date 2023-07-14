@@ -3,9 +3,9 @@ import React from 'react'
 
   function Contact() {
   return (
-    <View>
-      <Text>Contact</Text>
+    <View style={{alignItems:'center', marginTop:200}}>
+      <Text>Welcome in Contact page</Text>
     </View>
   )
 }
-export default Contact
+export default Contact;
