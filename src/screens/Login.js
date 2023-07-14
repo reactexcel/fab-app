@@ -1,18 +1,49 @@
 import React, {useState} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity, Alert} from 'react-native';
 import FormInput from '../components/FormInput';
+import api from '../utils/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function LoginScreen({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleLogin = () => {
+  const setAccessToken = async value => {
+    try {
+      await AsyncStorage.setItem('token', value);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const handleLogin = async () => {
     setError('');
-
-    if (!email && !password) {
-      setError('Please fill all detail');
+    // console.log(email);
+    // console.log(password);
+    if (!email || !password) {
+      setError('Please fill all fields.');
       return;
+    }
+    // login api
+    try {
+      const response = await api.post('signin/', {
+        email,
+        password,
+      });
+      console.log(response);
+      if (response.data.success === false) {
+        Alert.alert('Error', response.data.message);
+      } else {
+        Alert.alert('Success', response.data.message, [
+          {
+            text: 'OK',
+            onPress: () => navigation.navigate('Drawer'),
+          },
+        ]);
+        setAccessToken(response.data.token.access);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
