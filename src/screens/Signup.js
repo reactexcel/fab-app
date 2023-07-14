@@ -7,6 +7,7 @@ import {
   Alert,
   TouchableOpacity,
   FlatList,
+  Image,
 } from 'react-native';
 import axios from 'axios';
 import FormInput from '../components/FormInput';
@@ -16,6 +17,7 @@ const SignupScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
 
   const [role, setRoles] = useState([
     {name: 'Exhibitor', id: 1, isChecked: false},
@@ -35,62 +37,56 @@ const SignupScreen = ({navigation}) => {
   };
 
   const handleSignup = async () => {
-  
-    setEmail('');
-    setPassword('');
-    setConfirmPassword('');
-
-    // Perform signup logic here
-
-    //navigation.navigate('Login');
-
+    if (!email && !password && !confirmPassword) {
+      setError('Please Fill all Detail');
+      return;
+    }
     try {
-      const response = await api.post(
-        'signup/',
-        {
-          email,
-          password: {password: password, confirm_password: confirmPassword},
-          role,
-        },
-      );
-      console.log(response);
+      const response = await api.post('signup', {
+        email,
+        password: {password: password, confirm_password: confirmPassword},
+        role: role.find(r => r.isChecked)?.id || '',
+      });
+      Alert.alert(response.data.message);
+      if (response?.data?.status) {
+        navigation.navigate('Login');
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
-  
-  
-
   return (
     <>
       <View style={styles.container}>
+        <View style={{alignItems: 'center'}}>
+          <Image
+            source={require('../assests/cloud.png')}
+            style={{height: 200, width: 200}}
+          />
+        </View>
         <Text style={styles.header}>Sign up</Text>
+
+        <Text style={{color: 'red', textAlign: 'right'}}>{error}</Text>
         <FormInput
           textHeader={'Whats your email?'}
           value={email}
           onChangeText={text => setEmail(text)}
           placeholder={'Enter your email'}
-          secureTextEntry={false}
         />
-
         <FormInput
-          textHeader={'What is your password'}
+          textHeader={'What is your password?'}
           value={password}
           onChangeText={text => setPassword(text)}
-          placeholder={'Enter your Password'} 
+          placeholder={'Enter your Password'}
           secureTextEntry={true}
-          
-
-          
         />
         <FormInput
-          textHeader={'What s your Confirm Password'}
+          textHeader={'What s your Confirm Password?'}
           value={confirmPassword}
           onChangeText={text => setConfirmPassword(text)}
           placeholder={'Enter your Confirm Password'}
           secureTextEntry={true}
-          
         />
 
         <View style={{flexDirection: 'row'}}>
@@ -124,8 +120,7 @@ const SignupScreen = ({navigation}) => {
               onPress={() => {
                 navigation.navigate('Login'),
                   setConfirmPassword(''),
-                  setEmail('')
-                  
+                  setEmail('');
               }}>
               {' '}
               Login
@@ -146,7 +141,7 @@ const styles = StyleSheet.create({
   },
   header: {
     textAlign: 'center',
-    marginBottom: 80,
+    marginBottom: 10,
     color: 'black',
     fontWeight: '400',
     fontSize: 30,
@@ -163,7 +158,7 @@ const styles = StyleSheet.create({
     width: 170,
     height: 40,
     borderRadius: 5,
-    marginBottom: 30,
+    marginBottom: 20,
     justifyContent: 'center',
     margin: 5,
   },
