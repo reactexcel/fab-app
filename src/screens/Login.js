@@ -1,8 +1,16 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, Alert} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  Alert,
+  Image,
+} from 'react-native';
 import FormInput from '../components/FormInput';
 import api from '../utils/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import colors from '../styles/colors';
 
 function LoginScreen({navigation}) {
   const [email, setEmail] = useState('');
@@ -18,8 +26,6 @@ function LoginScreen({navigation}) {
   };
   const handleLogin = async () => {
     setError('');
-    // console.log(email);
-    // console.log(password);
     if (!email || !password) {
       setError('Please fill all fields.');
       return;
@@ -49,8 +55,15 @@ function LoginScreen({navigation}) {
 
   return (
     <View style={styles.container}>
+      <View style={{alignItems: 'center'}}>
+        <Image
+          source={require('../assests/cloud.png')}
+          style={{height: 200, width: 200}}
+        />
+      </View>
+
       <Text style={styles.header}>Login</Text>
-      <Text style={{color: 'red', textAlign: 'right'}}>{error}</Text>
+      <Text style={{color: colors.red, textAlign: 'right'}}>{error}</Text>
       <FormInput
         textHeader={'Enter your email'}
         value={email}
@@ -96,14 +109,14 @@ const styles = StyleSheet.create({
   },
   header: {
     textAlign: 'center',
-    marginBottom: 80,
+    marginBottom: 50,
     color: 'black',
     fontWeight: '400',
     fontSize: 30,
   },
 
   btn: {
-    backgroundColor: 'orange',
+    backgroundColor: colors.orange,
     width: '100%',
     padding: 10,
     borderRadius: 20,
@@ -117,15 +130,15 @@ const styles = StyleSheet.create({
   },
   link_Text: {
     marginTop: 10,
-    color: 'black',
+    color: colors.black,
     fontSize: 17,
   },
   link_Text2: {
     fontWeight: 'bold',
-    color: 'orange',
+    color: colors.orange,
   },
   error: {
-    color: 'red',
+    color: colors.red,
     marginTop: -25,
     marginBottom: 20,
   },

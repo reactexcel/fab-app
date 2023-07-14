@@ -12,6 +12,7 @@ import {
 import axios from 'axios';
 import FormInput from '../components/FormInput';
 import api from '../utils/api';
+import colors from '../styles/colors';
 
 const SignupScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -37,19 +38,31 @@ const SignupScreen = ({navigation}) => {
   };
 
   const handleSignup = async () => {
-    if (!email && !password && !confirmPassword) {
+    setError('');
+
+    if (!email || !password || !confirmPassword) {
       setError('Please Fill all Detail');
       return;
     }
     try {
-      const response = await api.post('signup', {
+      const response = await api.post('signup/', {
         email,
         password: {password: password, confirm_password: confirmPassword},
         role: role.find(r => r.isChecked)?.id || '',
       });
-      Alert.alert(response.data.message);
-      if (response?.data?.status) {
-        navigation.navigate('Login');
+      console.log(response);
+      // if (response.data.status) {
+      //   navigation.navigate('Login');
+      // }
+      if (response.data.success === false) {
+        Alert.alert('Error', response.data.message);
+      } else {
+        Alert.alert('Success', response.data.message, [
+          {
+            text: 'OK',
+            onPress: () => navigation.navigate('Login'),
+          },
+        ]);
       }
     } catch (error) {
       console.log(error);
@@ -67,7 +80,7 @@ const SignupScreen = ({navigation}) => {
         </View>
         <Text style={styles.header}>Sign up</Text>
 
-        <Text style={{color: 'red', textAlign: 'right'}}>{error}</Text>
+        <Text style={{color: colors.red, textAlign: 'right'}}>{error}</Text>
         <FormInput
           textHeader={'Whats your email?'}
           value={email}
@@ -93,14 +106,19 @@ const SignupScreen = ({navigation}) => {
           <FlatList
             data={role}
             keyExtractor={item => item.id.toString()}
+            showsHorizontalScrollIndicator={false}
             renderItem={({item, index}) => (
               <TouchableOpacity
                 onPress={() => handleRolePress(index)}
                 style={[
                   styles.btns,
-                  {backgroundColor: item.isChecked ? 'orange' : 'gray'},
+                  {
+                    backgroundColor: item.isChecked
+                      ? colors.orange
+                      : colors.gray,
+                  },
                 ]}>
-                <Text style={{textAlign: 'center', color: 'white'}}>
+                <Text style={{textAlign: 'center', color: colors.white}}>
                   {item.name}
                 </Text>
               </TouchableOpacity>
@@ -142,19 +160,19 @@ const styles = StyleSheet.create({
   header: {
     textAlign: 'center',
     marginBottom: 10,
-    color: 'black',
+    color: colors.black,
     fontWeight: '400',
     fontSize: 30,
   },
 
   btn: {
-    backgroundColor: 'orange',
+    backgroundColor: colors.orange,
     width: '100%',
     padding: 10,
     borderRadius: 20,
   },
   btns: {
-    backgroundColor: 'gray',
+    backgroundColor: colors.gray,
     width: 170,
     height: 40,
     borderRadius: 5,
@@ -164,21 +182,21 @@ const styles = StyleSheet.create({
   },
   btn_Text: {
     textAlign: 'center',
-    color: 'black',
+    color: colors.black,
     fontWeight: '500',
     fontSize: 20,
   },
   link_Text: {
     marginTop: 10,
-    color: 'black',
+    color: colors.black,
     fontSize: 17,
   },
   link_Text2: {
     fontWeight: 'bold',
-    color: 'orange',
+    color: colors.orange,
   },
   error: {
-    color: 'red',
+    color: colors.red,
     marginTop: -25,
     marginBottom: 20,
   },
