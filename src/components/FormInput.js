@@ -2,23 +2,16 @@ import React from 'react';
 import {View, Text, StyleSheet, TextInput} from 'react-native';
 import colors from '../styles/colors';
 
-function FormInput({
-  textHeader,
-  value,
-  placeholder,
-  onChangeText,
-  secureTextEntry = false,
-}) {
+function FormInput({textHeader, value, secureTextEntry = false, ...props}) {
   return (
     <View>
       <Text style={styles.label}>{textHeader}</Text>
       <TextInput
         style={styles.input}
-        placeholder={placeholder}
         value={value}
-        onChangeText={onChangeText}
         secureTextEntry={secureTextEntry}
         autoCapitalize="none"
+        {...props}
       />
     </View>
   );

@@ -3,8 +3,8 @@ import React from 'react'
 
   function Contact() {
   return (
-    <View style={{alignItems:'center', marginTop:200}}>
-      <Text>Welcome in Contact page</Text>
+    <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+      <Text style={{fontSize: 25}}>Welcome to my Contact page</Text>
     </View>
   )
 }

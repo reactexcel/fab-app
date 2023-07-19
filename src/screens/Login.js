@@ -1,36 +1,22 @@
-import React, {useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  Alert,
-  Image,
-} from 'react-native';
+import React, { useState, useContext } from 'react';
+import { View, StyleSheet, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import FormInput from '../components/FormInput';
 import api from '../utils/api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import colors from '../styles/colors';
+import { AuthContext } from '../contexts/AuthContext';
 
-function LoginScreen({navigation}) {
+function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const { handleLogin } = useContext(AuthContext);
 
-  const setAccessToken = async value => {
-    try {
-      await AsyncStorage.setItem('token', value);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-  const handleLogin = async () => {
+  const handleLoginSubmit = async () => {
     setError('');
     if (!email || !password) {
       setError('Please fill all fields.');
       return;
     }
-    // login api
     try {
       const response = await api.post('signin/', {
         email,
@@ -46,7 +32,7 @@ function LoginScreen({navigation}) {
             onPress: () => navigation.navigate('Drawer'),
           },
         ]);
-        setAccessToken(response.data.token.access);
+        handleLogin(response.data.token.access);
       }
     } catch (error) {
       console.log(error);
@@ -55,35 +41,34 @@ function LoginScreen({navigation}) {
 
   return (
     <View style={styles.container}>
-      <View style={{alignItems: 'center'}}>
+      <View style={{ alignItems: 'center' }}>
         <Image
           source={require('../assests/cloud.png')}
-          style={{height: 200, width: 200}}
+          style={{ height: 200, width: 200 }}
         />
       </View>
 
       <Text style={styles.header}>Login</Text>
-      <Text style={{color: colors.red, textAlign: 'right'}}>{error}</Text>
+      <Text style={{ color: colors.red, textAlign: 'right' }}>{error}</Text>
       <FormInput
         textHeader={'Enter your email'}
         value={email}
-        onChangeText={text => setEmail(text)}
+        onChangeText={(text) => setEmail(text)}
         placeholder="Enter your Email"
       />
       <FormInput
         textHeader={'Password'}
         value={password}
-        onChangeText={text => setPassword(text)}
+        onChangeText={(text) => setPassword(text)}
         placeholder="Enter your Password"
         secureTextEntry={true}
       />
 
-      <View style={{alignItems: 'center'}}>
+      <View style={{ alignItems: 'center' }}>
         <TouchableOpacity
           style={styles.btn}
-          onPress={() => {
-            handleLogin();
-          }}>
+          onPress={handleLoginSubmit}
+        >
           <Text style={styles.btn_Text}>Login</Text>
         </TouchableOpacity>
         <Text style={styles.link_Text}>
@@ -92,7 +77,8 @@ function LoginScreen({navigation}) {
             style={styles.link_Text2}
             onPress={() => {
               navigation.navigate('Signup');
-            }}>
+            }}
+          >
             Signup
           </Text>
         </Text>
@@ -145,3 +131,9 @@ const styles = StyleSheet.create({
 });
 
 export default LoginScreen;
+
+
+
+
+
+  

@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {
   View,
-  Button,
   StyleSheet,
   Text,
   Alert,
@@ -9,20 +8,21 @@ import {
   FlatList,
   Image,
 } from 'react-native';
-import axios from 'axios';
 import FormInput from '../components/FormInput';
 import api from '../utils/api';
 import colors from '../styles/colors';
+import OtpModal from '../components/OtpModal';
 
 const SignupScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [isModalVisible, setModalVisible] = useState(false);
 
   const [role, setRoles] = useState([
     {name: 'Exhibitor', id: 1, isChecked: false},
-    {name: 'Fabricators', id: 2, isChecked: false},
+    {name: 'Fabricator', id: 2, isChecked: false},
   ]);
 
   const handleRolePress = index => {
@@ -41,7 +41,7 @@ const SignupScreen = ({navigation}) => {
     setError('');
 
     if (!email || !password || !confirmPassword) {
-      setError('Please Fill all Detail');
+      setError('Please Filled all Detail');
       return;
     }
     try {
@@ -63,6 +63,7 @@ const SignupScreen = ({navigation}) => {
             onPress: () => navigation.navigate('Login'),
           },
         ]);
+        setModalVisible(true);
       }
     } catch (error) {
       console.log(error);
@@ -70,83 +71,84 @@ const SignupScreen = ({navigation}) => {
   };
 
   return (
-    <>
-      <View style={styles.container}>
-        <View style={{alignItems: 'center'}}>
-          <Image
-            source={require('../assests/cloud.png')}
-            style={{height: 200, width: 200}}
-          />
-        </View>
-        <Text style={styles.header}>Sign up</Text>
-
-        <Text style={{color: colors.red, textAlign: 'right'}}>{error}</Text>
-        <FormInput
-          textHeader={'Whats your email?'}
-          value={email}
-          onChangeText={text => setEmail(text)}
-          placeholder={'Enter your email'}
+    <View style={styles.container}>
+      <View style={{alignItems: 'center'}}>
+        <Image
+          source={require('../assests/cloud.png')}
+          style={{height: 200, width: 200}}
         />
-        <FormInput
-          textHeader={'What is your password?'}
-          value={password}
-          onChangeText={text => setPassword(text)}
-          placeholder={'Enter your Password'}
-          secureTextEntry={true}
-        />
-        <FormInput
-          textHeader={'What s your Confirm Password?'}
-          value={confirmPassword}
-          onChangeText={text => setConfirmPassword(text)}
-          placeholder={'Enter your Confirm Password'}
-          secureTextEntry={true}
-        />
-
-        <View style={{flexDirection: 'row'}}>
-          <FlatList
-            data={role}
-            keyExtractor={item => item.id.toString()}
-            showsHorizontalScrollIndicator={false}
-            renderItem={({item, index}) => (
-              <TouchableOpacity
-                onPress={() => handleRolePress(index)}
-                style={[
-                  styles.btns,
-                  {
-                    backgroundColor: item.isChecked
-                      ? colors.orange
-                      : colors.gray,
-                  },
-                ]}>
-                <Text style={{textAlign: 'center', color: colors.white}}>
-                  {item.name}
-                </Text>
-              </TouchableOpacity>
-            )}
-            horizontal={true}
-          />
-        </View>
-
-        <View style={{alignItems: 'center'}}>
-          <TouchableOpacity style={styles.btn} onPress={handleSignup}>
-            <Text style={styles.btn_Text}>Sign up</Text>
-          </TouchableOpacity>
-          <Text style={styles.link_Text}>
-            Have an account?
-            <Text
-              style={styles.link_Text2}
-              onPress={() => {
-                navigation.navigate('Login'),
-                  setConfirmPassword(''),
-                  setEmail('');
-              }}>
-              {' '}
-              Login
-            </Text>
-          </Text>
-        </View>
       </View>
-    </>
+      <Text style={styles.header}>Sign up</Text>
+
+      <Text style={{color: colors.red, textAlign: 'right'}}>{error}</Text>
+      <FormInput
+        textHeader={'Email'}
+        value={email}
+        onChangeText={text => setEmail(text)}
+        placeholder={'test12@gmail.com'}
+      />
+      <FormInput
+        textHeader={'Password'}
+        value={password}
+        onChangeText={text => setPassword(text)}
+        placeholder={'Test12@1234'}
+        secureTextEntry={true}
+      />
+      <FormInput
+        textHeader={'Confirm Password'}
+        value={confirmPassword}
+        onChangeText={text => setConfirmPassword(text)}
+        placeholder={'Confirm Password'}
+        secureTextEntry={true}
+      />
+      <Text style={styles.label}>I am</Text>
+      <View style={{flexDirection: 'row'}}>
+        <FlatList
+          data={role}
+          keyExtractor={item => item.id.toString()}
+          showsHorizontalScrollIndicator={false}
+          renderItem={({item, index}) => (
+            <TouchableOpacity
+              onPress={() => handleRolePress(index)}
+              style={[
+                styles.btns,
+                {
+                  backgroundColor: item.isChecked ? colors.orange : colors.gray,
+                },
+              ]}>
+              <Text style={{textAlign: 'center', color: colors.white}}>
+                {item.name}
+              </Text>
+            </TouchableOpacity>
+          )}
+          horizontal={true}
+        />
+      </View>
+
+      <View style={{alignItems: 'center'}}>
+        <TouchableOpacity style={styles.btn} onPress={handleSignup}>
+          <Text style={styles.btn_Text}>Sign up</Text>
+        </TouchableOpacity>
+        <Text style={styles.link_Text}>
+          Have an account?
+          <Text
+            style={styles.link_Text2}
+            onPress={() => {
+              navigation.navigate('Login'),
+                setConfirmPassword(''),
+                setEmail('');
+            }}>
+            {' '}
+            Login
+          </Text>
+        </Text>
+      </View>
+      <OtpModal
+        isVisible={isModalVisible}
+        setVisible={setModalVisible}
+        email={email}
+      />
+    </View>
   );
 };
 
@@ -164,6 +166,13 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     fontSize: 30,
   },
+  label: {
+    fontSize: 16,
+    fontWeight: '400',
+    marginBottom: 5,
+    color: colors.black,
+    marginLeft: 2,
+  },
 
   btn: {
     backgroundColor: colors.orange,
@@ -177,8 +186,10 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 5,
     marginBottom: 20,
-    justifyContent: 'center',
-    margin: 5,
+    justifyContent:'center',
+    margin:3
+    
+    
   },
   btn_Text: {
     textAlign: 'center',

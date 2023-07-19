@@ -3,9 +3,9 @@ import React from 'react'
 
  function About() {
   return (
-    <View style={{alignItems:'center',marginTop:200}}>
-      <Text>Welcome in About Page</Text>
-    </View>
+    <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+    <Text style={{fontSize: 25}}>Welcome to my About Page</Text>
+  </View>
   )
 }
 export default About;
