@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet, TextInput} from 'react-native';
+
 import colors from '../styles/colors';
 
 function FormInput({textHeader, value, secureTextEntry = false, ...props}) {
@@ -7,6 +8,7 @@ function FormInput({textHeader, value, secureTextEntry = false, ...props}) {
     <View>
       <Text style={styles.label}>{textHeader}</Text>
       <TextInput
+        placeholderTextColor={'grey'}
         style={styles.input}
         value={value}
         secureTextEntry={secureTextEntry}
@@ -32,6 +34,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     paddingHorizontal: 10,
     borderRadius: 5,
+    color: colors.gray,
   },
 });
 

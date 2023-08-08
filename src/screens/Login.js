@@ -1,74 +1,92 @@
-import React, { useState, useContext } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, Alert, Image } from 'react-native';
+import React, {useState, useContext} from 'react';
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  Alert,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
 import FormInput from '../components/FormInput';
 import api from '../utils/api';
 import colors from '../styles/colors';
-import { AuthContext } from '../contexts/AuthContext';
+import {AuthContext} from '../contexts/AuthContext';
+import OtpModal from '../components/OtpModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-function LoginScreen({ navigation }) {
+function LoginScreen({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { handleLogin } = useContext(AuthContext);
+  const {handleLogin} = useContext(AuthContext);
+  const [isVisible, setVisible] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const handleLoginSubmit = async () => {
-    setError('');
     if (!email || !password) {
       setError('Please fill all fields.');
       return;
     }
     try {
+      setLoading(true);
       const response = await api.post('signin/', {
         email,
         password,
       });
-      console.log(response);
+      const role = response.data.role.toString();
+      setLoading(false);
       if (response.data.success === false) {
-        Alert.alert('Error', response.data.message);
+        if (response.data.message === 'Please verify your email.') {
+          setVisible(true);
+        } else {
+          Alert.alert('Error', response.data.message);
+        }
       } else {
-        Alert.alert('Success', response.data.message, [
-          {
-            text: 'OK',
-            onPress: () => navigation.navigate('Drawer'),
-          },
-        ]);
+        await AsyncStorage.setItem('userRole', role).catch(console.error);
         handleLogin(response.data.token.access);
       }
     } catch (error) {
+      setLoading(false);
       console.log(error);
+    } finally {
+      // Show the loader for 2 seconds and then hide it
+      setTimeout(() => setLoading(false), 2000);
+      setEmail('');
+      setPassword('');
+      setError('');
     }
   };
 
   return (
     <View style={styles.container}>
-      <View style={{ alignItems: 'center' }}>
+      <View style={{alignItems: 'center'}}>
         <Image
           source={require('../assests/cloud.png')}
-          style={{ height: 200, width: 200 }}
+          style={{height: 200, width: 200}}
         />
       </View>
 
       <Text style={styles.header}>Login</Text>
-      <Text style={{ color: colors.red, textAlign: 'right' }}>{error}</Text>
+      {isLoading && <ActivityIndicator size="large" color={colors.orange} />}
+      <Text style={{color: colors.red, textAlign: 'right'}}>{error}</Text>
       <FormInput
         textHeader={'Enter your email'}
         value={email}
-        onChangeText={(text) => setEmail(text)}
+        onChangeText={text => setEmail(text)}
         placeholder="Enter your Email"
       />
+
       <FormInput
         textHeader={'Password'}
         value={password}
-        onChangeText={(text) => setPassword(text)}
+        onChangeText={text => setPassword(text)}
         placeholder="Enter your Password"
         secureTextEntry={true}
       />
 
-      <View style={{ alignItems: 'center' }}>
-        <TouchableOpacity
-          style={styles.btn}
-          onPress={handleLoginSubmit}
-        >
+      <View style={{alignItems: 'center'}}>
+        <TouchableOpacity style={styles.btn} onPress={handleLoginSubmit}>
           <Text style={styles.btn_Text}>Login</Text>
         </TouchableOpacity>
         <Text style={styles.link_Text}>
@@ -77,12 +95,13 @@ function LoginScreen({ navigation }) {
             style={styles.link_Text2}
             onPress={() => {
               navigation.navigate('Signup');
-            }}
-          >
+            }}>
             Signup
           </Text>
         </Text>
       </View>
+
+      <OtpModal isVisible={isVisible} setVisible={setVisible} email={email} />
     </View>
   );
 }
@@ -131,9 +150,3 @@ const styles = StyleSheet.create({
 });
 
 export default LoginScreen;
-
-
-
-
-
-  

@@ -39,7 +39,6 @@ const SignupScreen = ({navigation}) => {
 
   const handleSignup = async () => {
     setError('');
-
     if (!email || !password || !confirmPassword) {
       setError('Please Filled all Detail');
       return;
@@ -50,20 +49,12 @@ const SignupScreen = ({navigation}) => {
         password: {password: password, confirm_password: confirmPassword},
         role: role.find(r => r.isChecked)?.id || '',
       });
-      console.log(response);
-      // if (response.data.status) {
-      //   navigation.navigate('Login');
-      // }
+
       if (response.data.success === false) {
         Alert.alert('Error', response.data.message);
       } else {
-        Alert.alert('Success', response.data.message, [
-          {
-            text: 'OK',
-            onPress: () => navigation.navigate('Login'),
-          },
-        ]);
         setModalVisible(true);
+        Alert.alert('Success', response.data.message);
       }
     } catch (error) {
       console.log(error);
@@ -147,6 +138,7 @@ const SignupScreen = ({navigation}) => {
         isVisible={isModalVisible}
         setVisible={setModalVisible}
         email={email}
+        navigation={navigation}
       />
     </View>
   );
@@ -186,10 +178,8 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 5,
     marginBottom: 20,
-    justifyContent:'center',
-    margin:3
-    
-    
+    justifyContent: 'center',
+    margin: 3,
   },
   btn_Text: {
     textAlign: 'center',
