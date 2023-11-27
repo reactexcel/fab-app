@@ -3,11 +3,11 @@ import {
   DrawerContentScrollView,
   DrawerItemList,
 } from '@react-navigation/drawer';
-import {View, Text, TouchableOpacity, Image, SafeAreaView} from 'react-native';
+import {View, Text, TouchableOpacity, Image, Platform} from 'react-native';
 import {AuthContext} from '../contexts/AuthContext';
 import {useContext, useState, useEffect} from 'react';
 import HomeScreen from '../screens/Home';
-import About from '../screens/About';
+// import About from '../screens/About';
 import Contact from '../screens/Contact';
 import Profile from '../screens/Profile';
 import colors from '../styles/colors';
@@ -16,6 +16,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Notification from '../screens/Notification';
 import Status from '../screens/Status';
+import Rating from '../screens/Rating';
+import Upload from '../screens/Upload';
+import Response from '../screens/Response';
+import Faq from '../screens/Faq';
 
 const Drawer = createDrawerNavigator();
 
@@ -26,19 +30,34 @@ function CustomDrawerContent(props) {
     handleLogout();
   };
   const [fullname, setFullName] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState('');
+
   useEffect(() => {
-    // Fetch userRole from AsyncStorage when the component mounts
     const fetchUserName = async () => {
       try {
-        const storedUserRole = await AsyncStorage.getItem('userName').catch(
-          console.error,
-        );
-        setFullName(storedUserRole);
+        const storedFullName = await AsyncStorage.getItem('userName');
+        setFullName(storedFullName || 'Hello');
+        setLoading(false); // Set loading to false once data is fetched
+      } catch (error) {
+        console.log(error);
+        setLoading(false); // Handle error by setting loading to false
+      }
+    };
+    fetchUserName();
+  }, []);
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      try {
+        const storedUserRole = await AsyncStorage.getItem('userRole');
+        setUserRole(storedUserRole);
       } catch (error) {
         console.log(error);
       }
     };
-    fetchUserName();
+
+    fetchUserRole();
   }, []);
 
   return (
@@ -48,7 +67,11 @@ function CustomDrawerContent(props) {
           backgroundColor: 'orange',
           height: 220,
         }}>
-        <View style={{marginTop: 50, marginLeft: 20}}>
+        <View
+          style={{
+            marginTop: Platform.OS === 'android' ? 30 : 45,
+            marginLeft: 20,
+          }}>
           <Image
             source={require('../assests/man.png')}
             style={{height: 100, width: 100}}
@@ -60,34 +83,37 @@ function CustomDrawerContent(props) {
               fontWeight: 'bold',
               marginTop: 10,
             }}>
-            {fullname ? (
-              <Text
-                style={{
-                  fontSize: 25,
-                  color: 'black',
-                  fontWeight: 'bold',
-                  marginTop: 10,
-                }}>
-                {fullname}
-              </Text>
+            {loading ? (
+              <Text>Loading...</Text>
             ) : (
               <Text
                 style={{
                   fontSize: 25,
                   color: 'black',
                   fontWeight: 'bold',
-                  marginTop: 10,
+                  marginTop: 2,
                 }}>
-                Hello
+                {fullname}
               </Text>
             )}
           </Text>
+          <Text
+            style={{
+              fontSize: 18,
+              color: 'black',
+              marginTop: 5,
+              marginBottom: 10,
+            }}>
+            ( {userRole == 1 ? 'Exhibitor' : 'Fabricators'} )
+          </Text>
         </View>
       </View>
-      <DrawerContentScrollView {...props}>
+
+      <DrawerContentScrollView
+        {...props}
+        style={Platform.OS === 'ios' ? {marginTop: -48} : {}}>
         <DrawerItemList {...props} />
       </DrawerContentScrollView>
-
       <View style={{borderTopWidth: 1, borderColor: 'gray', marginBottom: 30}}>
         <TouchableOpacity
           onPress={handleLogoutAction}
@@ -151,7 +177,31 @@ function MyDrawer() {
           ),
         }}
       />
+
       <Drawer.Screen
+        name="Exhibitions"
+        component={UserInfo}
+        options={{
+          drawerLabel: 'Exhibitions',
+          drawerIcon: ({focused}) => (
+            <Icon name="eye" size={30} color="#808080" />
+          ),
+        }}
+      />
+
+      {userRole == 1 && (
+        <Drawer.Screen
+          name="Notifications"
+          component={Notification}
+          options={{
+            drawerLabel: 'Notifications',
+            drawerIcon: ({focused}) => (
+              <Icon name="notifications" size={30} color="#808080" />
+            ),
+          }}
+        />
+      )}
+      {/* <Drawer.Screen
         name="Contact"
         component={Contact}
         options={{
@@ -160,48 +210,52 @@ function MyDrawer() {
             <Icon name="people" size={30} color="#808080" />
           ),
         }}
-      />
+      /> */}
 
-      <Drawer.Screen
-        name="About"
-        component={About}
-        options={{
-          drawerLabel: 'About',
-          drawerIcon: ({focused}) => (
-            <Icon name="information-circle" size={30} color="#808080" />
-          ),
-        }}
-      />
+      {userRole == 2 && (
+        <Drawer.Screen
+          name="Upload Design"
+          component={Upload}
+          options={{
+            drawerLabel: 'Upload Design',
+            drawerIcon: ({focused}) => (
+              <Icon name="cloud-upload-outline" size={30} color="#808080" />
+            ),
+          }}
+        />
+      )}
+
       {userRole == 1 && (
         <Drawer.Screen
-          name="Exhibitions"
-          component={UserInfo}
+          name="Status"
+          component={Status}
           options={{
-            drawerLabel: 'Exhibitions',
+            drawerLabel: 'Status',
             drawerIcon: ({focused}) => (
-              <Icon name="eye" size={30} color="#808080" />
+              <Icon name="alert-circle" size={30} color="#808080" />
             ),
           }}
         />
       )}
 
       <Drawer.Screen
-        name="Notifications"
-        component={Notification}
+        name="Ratings"
+        component={Rating}
         options={{
-          drawerLabel: 'Notifications',
+          drawerLabel: 'Ratings',
           drawerIcon: ({focused}) => (
-            <Icon name="notifications" size={30} color="#808080" />
+            <Icon name="star-half-outline" size={30} color="#808080" />
           ),
         }}
       />
+
       <Drawer.Screen
-        name="Status"
-        component={Status}
+        name="FAQ"
+        component={Faq}
         options={{
-          drawerLabel: 'Status',
+          drawerLabel: 'FAQ',
           drawerIcon: ({focused}) => (
-            <Icon name="alert-circle" size={30} color="#808080" />
+            <Icon name="help-circle" size={35} color="#808080" />
           ),
         }}
       />

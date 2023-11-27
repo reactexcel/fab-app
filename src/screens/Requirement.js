@@ -15,7 +15,7 @@ function Requirement() {
 
   const buttonSubmitHandler = () => {
     setBudget(text => setBudget(text));
-    Alert.alert('Data Send is successfully');
+    Alert.alert('Data Send is successfully', budget);
     setBudget('');
   };
   return (
@@ -56,8 +56,9 @@ function Requirement() {
           <View style={styles.budget}>
             <TextInput
               placeholder="Enter Budget"
-              value="budget"
+              value={budget}
               style={styles.input}
+              onChangeText={text => setBudget(text)}
             />
 
             <TouchableOpacity style={styles.btn} onPress={buttonSubmitHandler}>

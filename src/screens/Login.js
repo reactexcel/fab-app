@@ -28,33 +28,34 @@ function LoginScreen({navigation}) {
       setError('Please fill all fields.');
       return;
     }
+
     try {
       setLoading(true);
-      const response = await api.post('signin/', {
-        email,
-        password,
-      });
-      const role = response.data.role.toString();
-      setLoading(false);
-      if (response.data.success === false) {
-        if (response.data.message === 'Please verify your email.') {
+      const response = await api.post('signin/', {email, password});
+      const {success, message, token, role} = response.data;
+
+      if (!success) {
+        if (message === 'Please verify your email.') {
           setVisible(true);
         } else {
-          Alert.alert('Error', response.data.message);
+          Alert.alert('Error', message);
         }
       } else {
-        await AsyncStorage.setItem('userRole', role).catch(console.error);
-        handleLogin(response.data.token.access);
+        await AsyncStorage.setItem('userRole', role.toString()).catch(
+          console.error,
+        );
+        handleLogin(token.access);
       }
     } catch (error) {
-      setLoading(false);
       console.log(error);
+      setError('An error occurred during login.');
     } finally {
-      // Show the loader for 2 seconds and then hide it
-      setTimeout(() => setLoading(false), 2000);
-      setEmail('');
-      setPassword('');
-      setError('');
+      setLoading(false);
+      setTimeout(() => {
+        setEmail('');
+        setPassword('');
+        setError('');
+      }, 2000);
     }
   };
 

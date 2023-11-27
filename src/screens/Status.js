@@ -17,11 +17,6 @@ function Status() {
   useEffect(() => {
     const screenOpenTime = new Date();
 
-    // Simulate some async loading process
-    // setTimeout(() => {
-    //   setProgressText('Progress....');
-    // }, 2000);
-
     const updateLastSeen = () => {
       const currentTime = new Date();
       const timeDiff = currentTime - screenOpenTime;
@@ -94,11 +89,7 @@ function Status() {
           <Accordion
             title="Work 1"
             content={
-              <View
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
+              <View>
                 <Text style={styles.heading}>Progress of work</Text>
                 <MyCarousel />
               </View>
@@ -131,11 +122,6 @@ function Status() {
             }
           />
         </View>
-
-        {/* <View style={{height: 470, width: 300}}>
-          <Text style={styles.heading}>Progress of work</Text>
-          <MyCarousel />
-        </View> */}
 
         <View>
           <Text style={styles.twoheading}>Any Query Please fill detail</Text>
@@ -200,7 +186,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     height: 100,
-    width: 350,
+    width: 360,
     borderColor: colors.gray,
     borderWidth: 1,
     textAlignVertical: 'top',
@@ -213,8 +199,8 @@ const styles = StyleSheet.create({
   },
   accordionContainer: {
     marginBottom: 20,
-    width: 350,
-    marginLeft: 20,
+    width: 370,
+    marginLeft: 10,
   },
   accordionHeader: {
     backgroundColor: colors.gray,

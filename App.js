@@ -1,6 +1,7 @@
 import {NavigationContainer} from '@react-navigation/native';
 import Stacks from './src/navigator/Stack';
 import AuthProvider from './src/contexts/AuthContext';
+import {StatusBar} from 'react-native';
 
 function App() {
   return (

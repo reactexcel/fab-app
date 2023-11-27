@@ -9,6 +9,7 @@ import Splash from '../screens/Splash';
 import Profile from '../screens/Profile';
 import Requirement from '../screens/Requirement';
 import Notification from '../screens/Notification';
+import HomeScreen from '../screens/Home';
 
 const Stack = createStackNavigator();
 function Stacks() {
@@ -28,33 +29,38 @@ function Stacks() {
       {showSplash && <Splash />}
       {!showSplash && (
         <Stack.Navigator>
-          {userLoggedIn ? (
+          {/* {userLoggedIn ? ( */}
+          <Stack.Screen
+            name="Drawer"
+            component={MyDrawer}
+            options={{headerShown: false}}
+          />
+          {/* ) : ( */}
+          <>
             <Stack.Screen
-              name="Drawer"
-              component={MyDrawer}
+              name="Signup"
+              component={SignupScreen}
               options={{headerShown: false}}
             />
-          ) : (
-            <>
-              <Stack.Screen
-                name="Signup"
-                component={SignupScreen}
-                options={{headerShown: false}}
-              />
 
-              <Stack.Screen
-                name="Login"
-                component={LoginScreen}
-                options={{headerShown: false}}
-              />
-            </>
-          )}
+            <Stack.Screen
+              name="Login"
+              component={LoginScreen}
+              options={{headerShown: false}}
+            />
+          </>
+          {/* )} */}
           <Stack.Screen
             name="Profile"
             component={Profile}
             options={{headerShown: false}}
           />
           <Stack.Screen name="Notifications" component={Notification} />
+          <Stack.Screen
+            name="home"
+            component={HomeScreen}
+            options={{headerShown: false}}
+          />
           <Stack.Screen name="Requirement" component={Requirement} />
         </Stack.Navigator>
       )}

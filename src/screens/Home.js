@@ -9,9 +9,26 @@ import {
 } from 'react-native';
 import React from 'react';
 import colors from '../styles/colors';
-import FormInput from '../components/FormInput';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MyCarousel from '../components/MyCarousel';
+import Card from './Card';
+import room1 from '../assests/room1.jpeg';
+import room2 from '../assests/room2.jpeg';
+import room3 from '../assests/room3.jpeg';
+import room4 from '../assests/room4.jpeg';
+import room5 from '../assests/room5.jpeg';
+import room6 from '../assests/room6.jpeg';
+import room7 from '../assests/room7.webp';
+import room8 from '../assests/room8.jpeg';
+import Shop from './Shop';
+import shop1 from '../assests/shop6.webp';
+import shop2 from '../assests/bed1.jpeg';
+import seen1 from '../assests/seen1.webp';
+import seen2 from '../assests/seen2.jpeg';
+import seen3 from '../assests/seen3.webp';
+import seen4 from '../assests/seen4.jpeg';
+import seen5 from '../assests/seen5.jpeg';
+import seen7 from '../assests/seen7.jpeg';
 
 function ExhibitionCenterCard({title, description, imageSource}) {
   const handleCardPress = () => {
@@ -148,11 +165,11 @@ function HomeScreen() {
                   fontWeight: 'bold',
                   color: colors.black,
                 }}>
-                Join us Exhibitions
+                We are Best Interior Designer's
               </Text>
               <Text
                 style={{marginLeft: 20, marginBottom: 10, color: '#28231D'}}>
-                Some art show invitation ideas
+                We'll Work Together to Create a Design Plan
               </Text>
             </View>
             <View
@@ -162,57 +179,76 @@ function HomeScreen() {
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <TouchableOpacity style={styles.btns}>
+              {/* <TouchableOpacity style={styles.btns}>
                 <Text style={{textAlign: 'center'}}>Join Us</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
         </View>
 
-        <View style={{margin: 32}}>
+        <View style={{marginBottom: 10, marginTop: 30}}>
           <Text
             style={{
               fontWeight: 'bold',
               fontSize: 22,
               marginBottom: 10,
               color: colors.black,
+              marginLeft: 20,
+              marginBottom: 20,
             }}>
-            Feedback Form
+            Room Interior Design
           </Text>
-          <Text style={{marginBottom: 30, color: colors.gray}}>
-            I appreciate the time you committed to providing me with detailed
-            and constructive feedback.
-          </Text>
-          <View
-            style={{
-              backgroundColor: colors.white,
-              padding: 20,
-              borderRadius: 5,
-            }}>
-            <FormInput textHeader={'Name'} placeholder={'Enter your Name'} />
-            <FormInput textHeader={'Email'} placeholder={'Enter your Email'} />
-            <FormInput
-              textHeader={'Mobile Number'}
-              placeholder={'Enter your Mobile Number'}
-            />
-            <FormInput
-              textHeader={'Suggestion'}
-              placeholder={'Any Suggestion'}
-            />
+          <Card
+            imageUri={room1}
+            title="Wooden Flooring with Design"
+            prices="$ 120 per/ft"
+            description="Whether you're looking to update your home or office, our designers are experts. From There, We'll Work Together to Create a Design Plan That Meets Your Needs."
+          />
 
-            <View style={{marginTop: 10}}>
-              <TouchableOpacity style={styles.btk}>
-                <Text
-                  style={{
-                    textAlign: 'center',
-                    color: colors.white,
-                    fontWeight: 'bold',
-                  }}>
-                  submit
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          <Card
+            imageUri={room2}
+            title="Customised in bed and design"
+            prices="$ 100 per/ft"
+            description="A minimalist interior design can help you save money. The reason is that less money is spent on furnishing and decorating the property. "
+          />
+
+          <Card
+            imageUri={room3}
+            title="Customised in bed and Sofa"
+            prices="$ 150 per/ft"
+            description="Embracing simplicity, functionality, and negative space, minimalist interior design encourages a more intentional and harmonious way of living. "
+          />
+          <Card
+            imageUri={room4}
+            title="Best Look bed and wall"
+            prices="$ 130 per/ft"
+            description="Minimalism is one of the main current trends in interior decoration, valuing the concept of less is more focusing on what is functional."
+          />
+
+          <Card
+            imageUri={room5}
+            title="Customised in wall and bed"
+            prices="$ 180 per/ft"
+            description="Livspace Brings To You The Home Renovation Service You Need! Make Your Home Look Beautiful. Customised Home Interiors "
+          />
+          <Card
+            imageUri={room6}
+            title="Customised in Look of wall and bed"
+            prices="$ 220 per/ft"
+            description="Minimalist Interior Design: Less Is More for Timeless Elegance · Stress Reduction and Mental Clutter Reduction: Minimalism can have a ... "
+          />
+          <Card
+            imageUri={room7}
+            title="Customised in wall with painting"
+            prices="$ 250 per/ft"
+            description="Pay only half the token amount to book your home interiors. Meet our designer online. See live 3D designs from the comfort of your home "
+          />
+          <Card
+            imageUri={room8}
+            title="Design with Beautiful look of wall"
+            prices="$ 210 per/ft"
+            description="Keep it simple, yet well defined. Clean, modern lines are the best for a minimal design scheme. The focus is on the shape and functionality of the furniture."
+          />
         </View>
 
         <Text
@@ -222,6 +258,54 @@ function HomeScreen() {
             marginBottom: 10,
             color: colors.black,
             marginLeft: 20,
+            marginBottom: 20,
+          }}>
+          Shop By Categories
+        </Text>
+        <View>
+          <Shop
+            imageUri1={shop1}
+            imageUri2={shop2}
+            title1=""
+            title2="King Size bed"
+          />
+        </View>
+
+        <View>
+          <Shop
+            imageUri1={seen1}
+            imageUri2={seen2}
+            title1=""
+            title2="Wooden Furniture"
+          />
+        </View>
+
+        <View>
+          <Shop
+            imageUri1={seen3}
+            imageUri2={seen4}
+            title1=""
+            title2="Hunter wooden"
+          />
+        </View>
+
+        <View style={{marginBottom: 15}}>
+          <Shop
+            imageUri1={seen5}
+            imageUri2={seen7}
+            title1=""
+            title2="Multipurpose Furniture"
+          />
+        </View>
+
+        <Text
+          style={{
+            fontWeight: 'bold',
+            fontSize: 22,
+            marginBottom: 10,
+            color: colors.black,
+            marginLeft: 20,
+            marginBottom: 20,
           }}>
           Upcoming Event
         </Text>
@@ -229,6 +313,7 @@ function HomeScreen() {
           style={{
             alignItems: 'center',
             justifyContent: 'center',
+            marginBottom: 30,
           }}>
           <MyCarousel />
         </View>
@@ -236,7 +321,7 @@ function HomeScreen() {
         <View
           style={{
             backgroundColor: '#28231D',
-            height: 200,
+            height: 70,
           }}>
           <View
             style={{
@@ -246,7 +331,7 @@ function HomeScreen() {
             }}>
             <Text style={{color: 'white', textAlign: 'right'}}>to top</Text>
           </View>
-          <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          {/* <View style={{flexDirection: 'row', justifyContent: 'center'}}>
             <View style={{marginTop: 20, marginLeft: 10, marginRight: 20}}>
               <Icon name="facebook" size={40} color="#FFFFFF" />
             </View>
@@ -274,7 +359,7 @@ function HomeScreen() {
             <Text style={{color: 'white', marginTop: 10}}>
               Standard website
             </Text>
-          </View>
+          </View> */}
         </View>
       </View>
     </ScrollView>
@@ -288,7 +373,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 10,
   },
-  container: {},
+
   imageBackground: {
     height: '100%',
     width: '100%',
@@ -341,6 +426,17 @@ const styles = StyleSheet.create({
     height: 100,
     width: 150,
     borderRadius: 5,
+  },
+  imgBackground: {
+    height: 400,
+    width: '100%',
+  },
+  wooden: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 166,
+    backgroundColor: colors.white,
+    padding: 15,
   },
 });
 export default HomeScreen;

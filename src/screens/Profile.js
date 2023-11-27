@@ -7,13 +7,16 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
+  PermissionsAndroid,
 } from 'react-native';
 import colors from '../styles/colors';
 import FormInput from '../components/FormInput';
 import api from '../utils/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DocumentPicker from 'react-native-document-picker';
+import {RNCamera} from 'react-native-camera';
 
-const Profile = () => {
+const Profile = ({navigation}) => {
   const [userRole, setUserRole] = useState('');
   const [userDetails, setUserdetails] = useState({
     editableMobile: '',
@@ -24,6 +27,58 @@ const Profile = () => {
     fullName: '',
   });
   const [loading, setLoading] = useState(true);
+  const requestCameraPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'Camera Permission',
+          message: 'App needs access to your camera for image upload.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    } catch (err) {
+      console.warn(err);
+      return false;
+    }
+  };
+
+  const openCamera = async () => {
+    const hasCameraPermission = await requestCameraPermission();
+    if (hasCameraPermission) {
+      navigation.navigate('CameraScreen'); // Navigate to the CameraScreen
+    } else {
+      Alert.alert(
+        'Permission Denied',
+        'You need to grant permission to use this feature.',
+      );
+    }
+  };
+
+  const uploadImageHandler = async () => {
+    try {
+      const doc = await DocumentPicker.pick({
+        type: [DocumentPicker.types.images],
+      }).catch(err => {
+        if (DocumentPicker.isCancel(err)) {
+          console.log('Document picking cancelled');
+        } else {
+          console.log('Error picking document:', err);
+        }
+      });
+
+      // Handle the selected image here (upload or use as needed)
+      console.log(doc);
+
+      // Also, consider opening the camera here if needed
+      openCamera();
+    } catch (err) {
+      console.log('Unhandled promise rejection:', err);
+    }
+  };
 
   useEffect(() => {
     // Fetch userRole from AsyncStorage when the component mounts
@@ -106,6 +161,7 @@ const Profile = () => {
                 color: colors.white,
                 textAlign: 'center',
                 fontWeight: 'bold',
+                fontSize: 20,
               }}>
               {userRole == 1 ? 'Exhibitor' : 'Fabricators'}
             </Text>
@@ -195,6 +251,11 @@ const Profile = () => {
                 setUserdetails({...userDetails, editableZipCode: text})
               }
             />
+            <TouchableOpacity
+              style={styles.imagePickerButton}
+              onPress={uploadImageHandler}>
+              <Text style={{color: colors.black}}>Upload Image</Text>
+            </TouchableOpacity>
           </View>
           <View style={{marginTop: 10}}>
             <TouchableOpacity style={styles.btn} onPress={handleEditProfile}>
@@ -237,9 +298,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#ff8c00',
     height: 40,
-    width: 100,
+    width: 130,
     borderRadius: 10,
-    marginLeft: 270,
+    marginLeft: 240,
     marginTop: 2,
   },
 
@@ -271,6 +332,22 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: 10,
     borderRadius: 20,
+  },
+  imagePickerButton: {
+    borderWidth: 1,
+    borderColor: colors.gray,
+    padding: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 5,
+    marginTop: 10,
+  },
+  selectedImage: {
+    width: 200,
+    height: 200,
+    resizeMode: 'cover',
+    alignSelf: 'center',
+    marginBottom: 20,
   },
 });
 
